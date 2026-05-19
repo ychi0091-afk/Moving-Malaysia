@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,26 +8,224 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Vega -->
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
+
 <body>
   <div class="page">
-    <h1>Moving Malaysia</h1>
-    <h2>Public Transport Ridership & Network Coverage</h2>
-    <p>
-      Exploring how Malaysians travel by rail and bus,
-      and where the network serves best.
-    </p>
 
-    <section class="chart-section">
-      <h3>1. Daily Total Ridership Trend</h3>
-      <div id="chart-total-trend"></div>
+    <section class="hero">
+      <div class="hero-left full-width">
+        <p class="section-tag">SECTION 1 · HERO / INTRODUCTION</p>
+        <h1>Moving Malaysia</h1>
+        <h2>Public Transport Ridership & Network Coverage</h2>
+        <p class="hero-desc">
+          Exploring how Malaysians travel by rail and bus, and where the network serves best.
+        </p>
+
+        <div class="hero-cards hero-cards-5">
+          <div class="mini-card">
+            <h4>Understand</h4>
+            <p>See public transport usage at a glance.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Track</h4>
+            <p>Follow ridership trends across time.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Locate</h4>
+            <p>See where stations and terminals are concentrated.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Compare</h4>
+            <p>Identify stronger and weaker service coverage.</p>
+          </div>
+          <div class="mini-card about-card">
+            <h4>About</h4>
+            <p>
+              An interactive story for the average Malaysian to explore
+              public transport usage and network coverage.
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
+
+    <!-- SECTION 2 -->
+    <section class="section-block section2-grid-layout">
+      <div class="left-label">
+        <p class="section-tag">SECTION 2</p>
+        <h3>How Busy is Malaysia’s Public Transport?</h3>
+        <p class="label-sub">(Trends over time)</p>
+      </div>
+
+      <div class="section2-grid">
+        <div class="chart-panel panel-21">
+          <h3>2.1 Total Ridership Over Time</h3>
+          <div id="chart-total-trend"></div>
+        </div>
+
+        <div class="chart-panel panel-22">
+          <h3>2.2 Ridership by Mode</h3>
+          <div id="chart-mode"></div>
+        </div>
+
+        <div class="chart-panel panel-23">
+          <h3>2.3 Weekday vs Weekend</h3>
+          <div id="chart-weekday-weekend"></div>
+        </div>
+
+        <div class="chart-panel panel-24">
+          <h3>2.4 Average Ridership by Year</h3>
+          <div id="chart-yearly-average"></div>
+        </div>
+      </div>
+
+      <div class="insight-box section2-insight-right">
+        <h4>Insight</h4>
+        <ul>
+          <li>Overall ridership changed across different periods.</li>
+          <li>Bus and rail modes do not contribute equally.</li>
+          <li>Weekday demand is generally stronger than weekend demand.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="section-block">
+      <div class="left-label">
+        <p class="section-tag">SECTION 3</p>
+        <h3>Which Services Move the Most People?</h3>
+        <p class="label-sub">(Service comparison)</p>
+      </div>
+
+      <div class="main-content two-col">
+        <div class="chart-panel">
+          <h3>3.1 Average Daily Ridership by Service</h3>
+          <div id="chart-service-bar"></div>
+        </div>
+
+        <div class="chart-panel">
+          <h3>3.2 Service Ranking</h3>
+          <div id="chart-service-rank"></div>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <h4>Insight</h4>
+        <ul>
+          <li>Some services consistently carry much more demand.</li>
+          <li>Rail services appear near the top of the ranking.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="section-block">
+      <div class="left-label">
+        <p class="section-tag">SECTION 4</p>
+        <h3>Where Does the Network Reach?</h3>
+        <p class="label-sub">(Network map)</p>
+      </div>
+
+      <div class="main-content two-col">
+        <div class="chart-panel">
+          <h3>4.1 Malaysia Station Overview Map</h3>
+          <div id="chart-malaysia-map"></div>
+        </div>
+
+        <div class="chart-panel">
+          <h3>4.2 Klang Valley Zoom-In Map</h3>
+          <div id="chart-klang-map"></div>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <h4>Insight</h4>
+        <ul>
+          <li>Station density is concentrated in certain regions.</li>
+          <li>Klang Valley is denser than many peripheral regions.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section class="section-block">
+      <div class="left-label">
+        <p class="section-tag">SECTION 5</p>
+        <h3>Coverage vs Usage</h3>
+        <p class="label-sub">(Efficiency & distribution)</p>
+      </div>
+
+      <div class="main-content two-col">
+        <div class="chart-panel">
+          <h3>5.1 Coverage vs Usage by Region</h3>
+          <div id="chart-coverage-scatter"></div>
+        </div>
+
+        <div class="chart-panel">
+          <h3>5.2 Ridership per Station</h3>
+          <div id="chart-ridership-per-station"></div>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <h4>Insight</h4>
+        <ul>
+          <li>Some regions have more stations but not proportionally more usage.</li>
+          <li>Ridership per station helps compare demand concentration.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="summary-section">
+      <div class="summary-card">
+        <h4>Most Used Services</h4>
+        <p>Service ranking highlights the busiest transport services.</p>
+      </div>
+      <div class="summary-card">
+        <h4>Mode Differences</h4>
+        <p>Public transport demand is split across bus and rail modes.</p>
+      </div>
+      <div class="summary-card">
+        <h4>Network Concentration</h4>
+        <p>Station locations are not evenly distributed across Malaysia.</p>
+      </div>
+      <div class="summary-card">
+        <h4>Planning Opportunity</h4>
+        <p>Coverage and usage can be compared to identify possible gaps.</p>
+      </div>
+    </section>
+
+    <footer class="footer-meta">
+      <div class="meta-card">
+        <h4>Data Sources</h4>
+        <p>data.gov.my – public transport ridership</p>
+        <p>Kaggle – Public Transport in Malaysia</p>
+      </div>
+
+      <div class="meta-card">
+        <h4>About</h4>
+        <p>This visualisation is designed for the average Malaysian audience.</p>
+      </div>
+
+      <div class="meta-card">
+        <h4>Author</h4>
+        <p>Your Name</p>
+        <p>Date: May 2026</p>
+      </div>
+
+      <div class="meta-card">
+        <h4>AI Acknowledgement</h4>
+        <p>AI tools were used to support ideation and drafting.</p>
+      </div>
+    </footer>
+
   </div>
 
   <script src="main.js"></script>
 </body>
+
 </html>

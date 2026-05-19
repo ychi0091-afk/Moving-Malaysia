@@ -1,12 +1,12 @@
 name,mode,service_group,state,region,latitude,longitude
 KL Sentral,KTM,KTM Komuter,WPKL,Klang Valley,3.1349,101.6861
 Pasar Seni,LRT,LRT Kelana Jaya,WPKL,Klang Valley,3.1424,101.6952
-Titiwangsa,Monorail,Monorail Line,WPKL,Klang Valley,3.1734,101.6960
-Muzium Negara,MRT,MRT Kajang Line,WPKL,Klang Valley,3.1370,101.6877
+Titiwangsa,Monorail,Monorail Line,WPKL,Klang Valley,3.1734,101.696
+Muzium Negara,MRT,MRT Kajang Line,WPKL,Klang Valley,3.137,101.6877
 Bukit Bintang,MRT,MRT Kajang Line,WPKL,Klang Valley,3.1467,101.7102
 Putrajaya Sentral,MRT,MRT Putrajaya Line,Putrajaya,Klang Valley,2.9264,101.6964
-Butterworth,Bus,Rapid Bus Penang,Pulau Pinang,Northern,5.3990,100.3630
-Kuantan Central,Bus,Rapid Bus Kuantan,Pahang,East Coast,3.8077,103.3260
+Butterworth,Bus,Rapid Bus Penang,Pulau Pinang,Northern,5.399,100.363
+Kuantan Central,Bus,Rapid Bus Kuantan,Pahang,East Coast,3.8077,103.326
 Johor Bahru Sentral,KTM,KTM Shuttle Tebrau,Johor,South,1.4655,103.7641
-Tanjung Aru,KTM,KTM Komuter,Sabah,East Malaysia,5.9490,116.0600
+Tanjung Aru,KTM,KTM Komuter,Sabah,East Malaysia,5.949,116.06
 Kuching Sentral,Bus,Regional Bus,Sarawak,East Malaysia,1.4847,110.3469
