@@ -27,27 +27,31 @@
 
         <div class="hero-cards hero-cards-5">
           <div class="mini-card">
+            <div class="mini-icon">👥</div>
             <h4>Understand</h4>
             <p>See public transport usage at a glance.</p>
           </div>
           <div class="mini-card">
+            <div class="mini-icon">📈</div>
             <h4>Track</h4>
             <p>Follow ridership trends across time.</p>
           </div>
           <div class="mini-card">
+            <div class="mini-icon">📍</div>
             <h4>Locate</h4>
             <p>See where stations and terminals are concentrated.</p>
           </div>
+
           <div class="mini-card">
+            <div class="mini-icon">💡</div>
             <h4>Compare</h4>
             <p>Identify stronger and weaker service coverage.</p>
           </div>
-          <div class="mini-card about-card">
+
+          <div class="mini-card">
+            <div class="mini-icon">ℹ️</div>
             <h4>About</h4>
-            <p>
-              An interactive story for the average Malaysian to explore
-              public transport usage and network coverage.
-            </p>
+            <p>An interactive story for Malaysian public transport usage and network coverage.</p>
           </div>
         </div>
       </div>
@@ -131,12 +135,12 @@
       </div>
 
       <div class="main-content two-col">
-        <div class="chart-panel">
+        <div class="chart-panel panel-41">
           <h3>4.1 Malaysia Station Overview Map</h3>
           <div id="chart-malaysia-map"></div>
         </div>
 
-        <div class="chart-panel">
+        <div class="chart-panel map-panel">
           <h3>4.2 Klang Valley Zoom-In Map</h3>
           <div id="chart-klang-map"></div>
         </div>
@@ -180,24 +184,42 @@
       </div>
     </section>
 
-    <section class="summary-section">
+    <div class="summary-section">
       <div class="summary-card">
+        <div class="summary-icon">🚆</div>
         <h4>Most Used Services</h4>
         <p>Service ranking highlights the busiest transport services.</p>
       </div>
+
       <div class="summary-card">
+        <div class="summary-icon">📊</div>
         <h4>Mode Differences</h4>
         <p>Public transport demand is split across bus and rail modes.</p>
       </div>
+
       <div class="summary-card">
+        <div class="summary-icon">📍</div>
         <h4>Network Concentration</h4>
         <p>Station locations are not evenly distributed across Malaysia.</p>
       </div>
-      <div class="summary-card">
-        <h4>Planning Opportunity</h4>
-        <p>Coverage and usage can be compared to identify possible gaps.</p>
+
+      <div class="summary-card filter-summary-card">
+        <div class="summary-icon">🔎</div>
+        <h4>Interactive Filter</h4>
+
+        <label for="mode-filter">Transport Mode</label>
+        <select id="mode-filter">
+          <option value="All">All modes</option>
+          <option value="Bus">Bus</option>
+          <option value="KTM">KTM</option>
+          <option value="LRT">LRT</option>
+          <option value="MRT">MRT</option>
+          <option value="Monorail">Monorail</option>
+        </select>
+
+        <p>Filter updates ridership trends, service rankings, and station coverage maps by transport mode.</p>
       </div>
-    </section>
+    </div>
 
     <footer class="footer-meta">
       <div class="meta-card">
@@ -213,8 +235,8 @@
 
       <div class="meta-card">
         <h4>Author</h4>
-        <p>Your Name</p>
-        <p>Date: May 2026</p>
+        <p>Name : Chiau Yan Pei</p>
+        <p>Date: 22 May 2026</p>
       </div>
 
       <div class="meta-card">

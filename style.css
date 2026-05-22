@@ -1,18 +1,23 @@
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: #f3f3f3;
+    background: #eef3f6;
     color: #222;
+}
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .page {
     width: 1420px;
     max-width: 95%;
     margin: 24px auto;
-    background: #fff;
-    border-radius: 12px;
+    background: #f7fbfd;
+    border-radius: 14px;
     padding: 24px;
     box-sizing: border-box;
+    box-shadow: 0 8px 28px rgba(40, 70, 90, 0.12);
 }
 
 .section-tag {
@@ -62,9 +67,9 @@ body {
 }
 
 .mini-card {
-    border: 1px solid #d9d9d9;
+    border: 1px solid #d8e1e6;
     border-radius: 8px;
-    background: #fafafa;
+    background: #f7fbfd;
     padding: 10px;
     min-height: 72px;
     box-sizing: border-box;
@@ -140,10 +145,9 @@ body {
 }
 
 .left-label {
-    border-left: none;
-    border-right: 1px solid #cfcfcf;
-    padding: 0 12px 0 0;
-    box-sizing: border-box;
+    background: #f7fbfd;
+    border-radius: 6px;
+    padding: 10px 12px 10px 0;
 }
 
 .left-label h3 {
@@ -163,14 +167,14 @@ body {
 .main-content {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 6px;
     align-items: stretch;
 }
 
 
 
 .chart-panel {
-    border: 1px solid #d9d9d9;
+    border: 1px solid #d8e1e6;
     border-radius: 8px;
     background: #fff;
     padding: 12px;
@@ -373,4 +377,143 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.map-panel {
+    background: #fff;
+}
+
+.chart-panel:has(#chart-malaysia-map),
+.chart-panel:has(#chart-klang-map) {
+    background: #fff;
+    overflow: hidden;
+}
+
+#chart-malaysia-map,
+#chart-klang-map {
+    background: #dcecf7;
+    min-height: 250px;
+    padding-bottom: 0;
+    border-radius: 0 0 6px 6px;
+}
+
+#chart-malaysia-map .vega-embed,
+#chart-klang-map .vega-embed,
+#chart-malaysia-map svg,
+#chart-klang-map svg {
+    background: #dcecf7 !important;
+}
+
+.chart-panel:has(#chart-malaysia-map),
+.chart-panel:has(#chart-klang-map) {
+    padding-bottom: 0;
+}
+
+.mini-card {
+    position: relative;
+}
+
+.mini-card h4 {
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.mini-icon {
+    display: inline-block;
+    font-size: 18px;
+    vertical-align: middle;
+    margin-bottom: 6px;
+}
+
+.summary-section {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 24px 0 18px !important;
+    padding-top: 16px !important;
+    border-top: 1px solid #d0d0d0 !important;
+}
+
+.summary-section .summary-card {
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 95px !important;
+    background: #f8fbfd !important;
+    border: 1px solid #d9e3ea !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+}
+
+.summary-icon {
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.summary-card h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.summary-card p {
+    margin: 0;
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: #333;
+}
+
+.footer-meta {
+    border-top: 1px solid #d0d0d0;
+    padding-top: 14px;
+    margin-top: 10px;
+}
+
+.meta-card {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 14px;
+    min-height: 95px;
+    box-sizing: border-box;
+}
+
+.meta-card h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+}
+
+.meta-card p {
+    margin: 3px 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #444;
+}
+
+.filter-summary-card label {
+    display: block;
+    margin: 4px 0 4px;
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+.filter-summary-card select {
+    width: 100%;
+    font-size: 10.5px;
+    padding: 5px 7px;
+    border: 1px solid #b8cbd6;
+    border-radius: 6px;
+    background: #ffffff;
+    margin-bottom: 6px;
+    box-sizing: border-box;
+}
+
+.filter-summary-card p {
+    font-size: 10px;
+    line-height: 1.35;
 }

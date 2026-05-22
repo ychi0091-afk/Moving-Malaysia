@@ -2,7 +2,12 @@ const baseConfig = {
   $schema: "https://vega.github.io/schema/vega-lite/v5.json",
   config: {
     background: "white",
-    view: { stroke: "#dddddd" },
+    font: "Arial",
+    title: {
+      font: "Arial",
+      subtitleFont: "Arial"
+    },
+    view: { stroke: null },
     axis: {
       labelFont: "Arial",
       titleFont: "Arial",
@@ -18,6 +23,13 @@ const baseConfig = {
       titleFont: "Arial",
       labelFontSize: 11,
       titleFontSize: 12
+    },
+    header: {
+      labelFont: "Arial",
+      titleFont: "Arial"
+    },
+    text: {
+      font: "Arial"
     }
   }
 };
@@ -34,6 +46,13 @@ function withBase(spec) {
 }
 
 const malaysiaGeoJson = "data/malaysia.geojson";
+const malaysiaStateGeoJson = "data/malaysia_states.geojson";
+const malaysiaDistrictGeoJson = "data/malaysia_districts.geojson";
+const modeColorScale = {
+  domain: ["Bus", "KTM", "LRT", "MRT", "Monorail"],
+  range: ["#4e79a7", "#f28e2b", "#e15759", "#76b7b2", "#59a14f"]
+};
+
 
 const totalTrendSpec = withBase({
         width: 470,
@@ -227,7 +246,7 @@ const totalTrendSpec = withBase({
             mark: {
                 type: "text",
                 dx: 8,
-                dy: -8,
+                dy: 3,
                 fontSize: 8,
                 color: "#2ca02c",
                 align: "left",
@@ -305,158 +324,289 @@ const modeSpec = withBase({
         });
 
 const weekdayWeekendSpec = withBase({
-    width: 420,
-    height: 160,
-    data: { url: "data/ridership_daily_clean.csv" },
-    transform: [
-        {
-        calculate:
-            "toNumber(datum.bus_rkl) + toNumber(datum.bus_rkn) + toNumber(datum.bus_rpn) + toNumber(datum.rail_lrt_ampang) + toNumber(datum.rail_lrt_kj) + toNumber(datum.rail_monorail) + toNumber(datum.rail_mrt_kajang) + toNumber(datum.rail_mrt_pjy) + toNumber(datum.rail_ets) + toNumber(datum.rail_intercity) + toNumber(datum.rail_komuter) + toNumber(datum.rail_komuter_utara) + toNumber(datum.rail_tebrau)",
-        as: "total_ridership"
+  width: 420,
+  height: 160,
+  data: { url: "data/ridership_daily_clean.csv" },
+  transform: [
+    {
+      calculate:
+        "toNumber(datum.bus_rkl) + toNumber(datum.bus_rkn) + toNumber(datum.bus_rpn) + toNumber(datum.rail_lrt_ampang) + toNumber(datum.rail_lrt_kj) + toNumber(datum.rail_monorail) + toNumber(datum.rail_mrt_kajang) + toNumber(datum.rail_mrt_pjy) + toNumber(datum.rail_ets) + toNumber(datum.rail_intercity) + toNumber(datum.rail_komuter) + toNumber(datum.rail_komuter_utara) + toNumber(datum.rail_tebrau)",
+      as: "total_ridership"
+    },
+    {
+      calculate: "day(datum.date) == 0 || day(datum.date) == 6 ? 'Weekend' : 'Weekday'",
+      as: "day_type"
+    },
+    {
+      aggregate: [
+        { op: "average", field: "total_ridership", as: "avg_ridership" }
+      ],
+      groupby: ["day_type"]
+    },
+    {
+      calculate: "datum.day_type == 'Weekday' ? 1 : 2",
+      as: "sort_order"
+    },
+    {
+      calculate: "datum.day_type == 'Weekday' ? '#4e79a7' : '#d9d9d9'",
+      as: "bar_colour"
+    }
+  ],
+  layer: [
+    {
+      mark: {
+        type: "bar",
+        cornerRadiusTopLeft: 4,
+        cornerRadiusTopRight: 4
+      },
+      encoding: {
+        x: {
+          field: "day_type",
+          type: "nominal",
+          sort: { field: "sort_order" },
+          title: null,
+          axis: {
+            labelFontSize: 8,
+            labelAngle: 0,
+            grid: false
+          }
         },
-        {
-        calculate: "day(datum.date) == 0 || day(datum.date) == 6 ? 'Weekend' : 'Weekday'",
-        as: "day_type"
+        y: {
+          field: "avg_ridership",
+          type: "quantitative",
+          title: "Avg Ridership",
+          axis: {
+            labelFontSize: 8,
+            titleFontSize: 9,
+            format: ".2s",
+            grid: false
+          }
+        },
+        color: {
+          field: "bar_colour",
+          type: "nominal",
+          scale: null,
+          legend: null
+        },
+        tooltip: [
+          { field: "day_type", type: "nominal", title: "Day Type" },
+          { field: "avg_ridership", type: "quantitative", title: "Average Ridership", format: "," }
+        ]
+      }
+    },
+    {
+      mark: {
+        type: "text",
+        dy: -8,
+        fontSize: 8,
+        fontWeight: "bold",
+        color: "#333"
+      },
+      encoding: {
+        x: {
+          field: "day_type",
+          type: "nominal",
+          sort: { field: "sort_order" }
+        },
+        y: {
+          field: "avg_ridership",
+          type: "quantitative"
+        },
+        text: {
+          field: "avg_ridership",
+          type: "quantitative",
+          format: ".2s"
         }
-    ],
-    layer: [
-        {
+      }
+    },
+    {
+      data: {
+          values: [
+            {
+              x_pos: "Weekday",
+              y_pos: 1060000,
+              label: "Weekday demand is higher"
+            }
+          ]
+        },
         mark: {
-            type: "bar",
-            cornerRadiusTopLeft: 3,
-            cornerRadiusTopRight: 3
+          type: "text",
+          align: "left",
+          dx: 15,
+          dy: -2,
+          fontSize: 8,
+          fontWeight: "bold",
+          color: "#4e79a7"
         },
         encoding: {
-            x: {
-                field: "day_type",
-                type: "nominal",
-                title: null,
-                axis: {
-                    labelFontSize: 8,
-                    labelAngle: 0,
-                    grid:false
-                }
-                },
-            y: {
-            aggregate: "average",
-            field: "total_ridership",
-            type: "quantitative",
-            title: "Avg Ridership",
-            axis: {
-                labelFontSize: 8,
-                titleFontSize: 9,
-                format: ".2s",
-                labelAngle: 0,
-                grid:false
-            }
-            },
-            color: {
-            field: "day_type",
+          x: {
+            field: "x_pos",
             type: "nominal",
-            legend: null
-            }
-        }
-        },
-        {
-        mark: {
-            type: "text",
-            dy: -6,
-            fontSize: 7,
-            color: "#333"
-        },
-        encoding: {
-            x: { field: "day_type", type: "nominal" },
-            y: {
-            aggregate: "average",
-            field: "total_ridership",
+            sort: ["Weekday", "Weekend"]
+          },
+          y: {
+            field: "y_pos",
             type: "quantitative"
-            },
-            text: {
-            aggregate: "average",
-            field: "total_ridership",
-            type: "quantitative",
-            format: ".2s"
-            }
+          },
+          text: {
+            field: "label"
+          }
         }
-        }
-    ]
-    });
+      }
+  ]
+});
 
 const yearlyAverageSpec = withBase({
-    width: 300,
-    height: 160,
-    data: { url: "data/ridership_daily_clean.csv" },
-    transform: [
-        {
-        calculate:
-            "toNumber(datum.bus_rkl) + toNumber(datum.bus_rkn) + toNumber(datum.bus_rpn) + toNumber(datum.rail_lrt_ampang) + toNumber(datum.rail_lrt_kj) + toNumber(datum.rail_monorail) + toNumber(datum.rail_mrt_kajang) + toNumber(datum.rail_mrt_pjy) + toNumber(datum.rail_ets) + toNumber(datum.rail_intercity) + toNumber(datum.rail_komuter) + toNumber(datum.rail_komuter_utara) + toNumber(datum.rail_tebrau)",
-        as: "total_ridership"
+  width: 300,
+  height: 160,
+  data: { url: "data/ridership_daily_clean.csv" },
+  transform: [
+    {
+      calculate:
+        "toNumber(datum.bus_rkl) + toNumber(datum.bus_rkn) + toNumber(datum.bus_rpn) + toNumber(datum.rail_lrt_ampang) + toNumber(datum.rail_lrt_kj) + toNumber(datum.rail_monorail) + toNumber(datum.rail_mrt_kajang) + toNumber(datum.rail_mrt_pjy) + toNumber(datum.rail_ets) + toNumber(datum.rail_intercity) + toNumber(datum.rail_komuter) + toNumber(datum.rail_komuter_utara) + toNumber(datum.rail_tebrau)",
+      as: "total_ridership"
+    },
+    {
+      timeUnit: "year",
+      field: "date",
+      as: "year_date"
+    },
+    {
+      calculate: "timeFormat(datum.year_date, '%Y')",
+      as: "year_label"
+    },
+    {
+      aggregate: [
+        { op: "average", field: "total_ridership", as: "avg_ridership" }
+      ],
+      groupby: ["year_label"]
+    },
+    {
+      calculate: "datum.year_label == '2020' ? 'Lowest year' : datum.year_label == '2026' ? 'Latest peak' : 'Other years'",
+      as: "year_highlight"
+    }
+  ],
+  layer: [
+    {
+      mark: {
+        type: "bar",
+        cornerRadiusTopLeft: 3,
+        cornerRadiusTopRight: 3
+      },
+      encoding: {
+        x: {
+          field: "year_label",
+          type: "ordinal",
+          title: null,
+          axis: {
+            labelFontSize: 8,
+            labelAngle: 0,
+            grid: false
+          }
         },
-        {
-        timeUnit: "year",
-        field: "date",
-        as: "year_date"
+        y: {
+          field: "avg_ridership",
+          type: "quantitative",
+          title: "Avg Ridership",
+          axis: {
+            labelFontSize: 8,
+            titleFontSize: 9,
+            format: ".2s",
+            grid: false
+          }
         },
+        color: {
+          field: "year_highlight",
+          type: "nominal",
+          scale: {
+            domain: ["Lowest year", "Latest peak", "Other years"],
+            range: ["#d62728", "#2c7fb8", "#d9d9d9"]
+          },
+          legend: null
+        },
+        tooltip: [
+          { field: "year_label", type: "ordinal", title: "Year" },
+          { field: "avg_ridership", type: "quantitative", title: "Average Ridership", format: "," },
+          { field: "year_highlight", type: "nominal", title: "Status" }
+        ]
+      }
+    },
+    {
+      transform: [
         {
-        calculate: "timeFormat(datum.year_date, '%Y')",
-        as: "year_label"
+          filter: "datum.year_label == '2019'"
         }
-    ],
-    layer: [
-        {
-        mark: {
-            type: "bar",
-            color: "#6baed6"
-        },
-        encoding: {
-            x: {
-            field: "year_label",
-            type: "ordinal",
-            title: null,
-            axis: {
-                labelFontSize: 8,
-                labelAngle: 0,
-                grid:false
-            }
-            },
-            y: {
-            aggregate: "average",
-            field: "total_ridership",
-            type: "quantitative",
-            title: "Avg Ridership",
-            axis: {
-                labelFontSize: 8,
-                titleFontSize: 9,
-                format: ".2s",
-                grid:false
-            }
-            }
+      ],
+      mark: {
+        type: "rule",
+        strokeDash: [4, 4],
+        strokeWidth: 1.2,
+        color: "#666"
+      },
+      encoding: {
+        y: {
+          field: "avg_ridership",
+          type: "quantitative"
         }
+      }
+    },
+    {
+    data: {
+        values: [
+          {
+            year_label: "2019",
+            y_pos: 900000,
+            label: "2019 pre-pandemic level"
+          }
+        ]
+      },
+      mark: {
+        type: "text",
+        align: "left",
+        dx: 20,
+        dy: -10,
+        fontSize: 7,
+        color: "#555"
+      },
+      encoding: {
+        x: {
+          field: "year_label",
+          type: "ordinal"
         },
-        {
-        mark: {
-            type: "text",
-            dy: -6,
-            fontSize: 7,
-            color: "#333"
+        y: {
+          field: "y_pos",
+          type: "quantitative"
         },
-        encoding: {
-            x: { field: "year_label", type: "ordinal" },
-            y: {
-            aggregate: "average",
-            field: "total_ridership",
-            type: "quantitative"
-            },
-            text: {
-            aggregate: "average",
-            field: "total_ridership",
-            type: "quantitative",
-            format: ".2s"
-            }
+        text: {
+          field: "label"
         }
+      }
+    },
+    {
+      mark: {
+        type: "text",
+        dy: -7,
+        fontSize: 7,
+        color: "#333"
+      },
+      encoding: {
+        x: {
+          field: "year_label",
+          type: "ordinal"
+        },
+        y: {
+          field: "avg_ridership",
+          type: "quantitative"
+        },
+        text: {
+          field: "avg_ridership",
+          type: "quantitative",
+          format: ".2s"
         }
-    ]
-    });
+      }
+    }
+  ]
+});
 
 const serviceBarSpec = withBase({
         width: 320,
@@ -509,13 +659,13 @@ const serviceBarSpec = withBase({
             }
             },
             color: {
-            field: "highlight_group",
-            type: "nominal",
-            scale: {
+              field: "highlight_group",
+              type: "nominal",
+              scale: {
                 domain: ["Top 3", "Others"],
-                range: ["#4e79a7", "#a0c4e4"]
-            },
-            legend: null
+                range: ["#2c7fb8", "#d9d9d9"]
+              },
+              legend: null
             },
             tooltip: [
             { field: "service", type: "nominal", title: "Service" },
@@ -541,10 +691,18 @@ const serviceRankSpec = withBase({
       as: "zero"
     },
     {
-      calculate: "datum.avg_ridership >= 120000 ? 'Top services' : 'Other services'",
+      window: [
+        { op: "rank", as: "service_rank" }
+      ],
+      sort: [
+        { field: "avg_ridership", order: "descending" }
+      ]
+    },
+    {
+      calculate: "datum.service_rank <= 3 ? 'Top 3' : 'Others'",
       as: "highlight_group"
     }
-  ],
+      ],
   layer: [
     {
       mark: {
@@ -606,11 +764,11 @@ const serviceRankSpec = withBase({
           field: "highlight_group",
           type: "nominal",
           scale: {
-            domain: ["Top services", "Other services"],
-            range: ["#2c7fb8", "#9ecae1"]
+            domain: ["Top 3", "Others"],
+            range: ["#2c7fb8", "#d9d9d9"]
           },
           legend: null
-        },
+          },
         tooltip: [
           { field: "service", type: "nominal", title: "Service" },
           { field: "avg_ridership", type: "quantitative", title: "Average Daily Ridership", format: "," }
@@ -622,7 +780,7 @@ const serviceRankSpec = withBase({
 
 const malaysiaMapSpec = withBase({
   width: 400,
-  height: 230,
+  height: 250,
   projection: {
     type: "mercator",
     center: [109.5, 3.7],
@@ -645,6 +803,40 @@ const malaysiaMapSpec = withBase({
         clip: true
       }
     },
+      {
+    data: {
+      url: malaysiaDistrictGeoJson,
+      format: {
+        type: "json",
+        property: "features"
+      }
+    },
+    mark: {
+      type: "geoshape",
+      fill: null,
+      stroke: "#ffffff",
+      strokeWidth: 0.45,
+      opacity: 0.9,
+      clip: true
+    }
+  },
+  {
+    data: {
+      url: malaysiaStateGeoJson,
+      format: {
+        type: "json",
+        property: "features"
+      }
+    },
+    mark: {
+      type: "geoshape",
+      fill: null,
+      stroke: "#5f6f72",
+      strokeWidth: 1.1,
+      opacity: 0.95,
+      clip: true
+    }
+  },
     {
       data: {
         values: [
@@ -684,8 +876,8 @@ const malaysiaMapSpec = withBase({
       mark: {
         type: "circle",
         filled: true,
-        opacity: 0.9,
-        stroke: "white",
+        opacity: 0.6,
+        stroke: "#333333",
         strokeWidth: 0.7,
         clip: true
       },
@@ -702,9 +894,7 @@ const malaysiaMapSpec = withBase({
           field: "mode",
           type: "nominal",
           title: "Mode",
-          scale: {
-            domain: ["Bus", "KTM", "LRT", "MRT", "Monorail"]
-          },
+          scale: modeColorScale,
           legend: {
             orient: "right",
             labelFontSize: 7,
@@ -713,7 +903,7 @@ const malaysiaMapSpec = withBase({
           }
         },
         size: {
-          value: 55
+          value: 70
         },
         tooltip: [
           { field: "name", type: "nominal", title: "Station" },
@@ -728,14 +918,15 @@ const malaysiaMapSpec = withBase({
   config: {
     background: "#dcecf7",
     view: {
-      stroke: null
+      stroke: "#d0d0d0",
+      strokeWidth: 1
     }
   }
 });
 
 const klangMapSpec = withBase({
   width: 400,
-  height: 230,
+  height: 250,
   projection: {
     type: "mercator",
     center: [101.68, 3.05],
@@ -758,10 +949,44 @@ const klangMapSpec = withBase({
         clip: true
       }
     },
+      {
+  data: {
+    url: malaysiaDistrictGeoJson,
+    format: {
+      type: "json",
+      property: "features"
+    }
+  },
+  mark: {
+    type: "geoshape",
+    fill: null,
+    stroke: "#ffffff",
+    strokeWidth: 0.45,
+    opacity: 0.9,
+    clip: true
+  }
+},
+{
+  data: {
+    url: malaysiaStateGeoJson,
+    format: {
+      type: "json",
+      property: "features"
+    }
+  },
+  mark: {
+    type: "geoshape",
+    fill: null,
+    stroke: "#5f6f72",
+    strokeWidth: 1.1,
+    opacity: 0.95,
+    clip: true
+  }
+},
     {
       data: {
         values: [
-          { place: "Kuala Lumpur", longitude: 101.69, latitude: 3.14 },
+          { place: "Kuala Lumpur", longitude: 101.63, latitude: 3.18 },
           { place: "Klang", longitude: 101.45, latitude: 3.04 },
           { place: "Shah Alam", longitude: 101.52, latitude: 3.07 },
           { place: "Putrajaya", longitude: 101.69, latitude: 2.93 }
@@ -791,64 +1016,108 @@ const klangMapSpec = withBase({
       }
     },
     {
-      data: {
-        url: "data/stations_clean.csv"
-      },
-      transform: [
-        {
-          filter: "datum.region == 'Klang Valley'"
-        }
-      ],
-      mark: {
-        type: "circle",
-        filled: true,
-        opacity: 0.95,
-        stroke: "white",
-        strokeWidth: 0.8,
-        clip: true
-      },
-      encoding: {
-        longitude: {
-          field: "longitude",
-          type: "quantitative"
-        },
-        latitude: {
-          field: "latitude",
-          type: "quantitative"
-        },
-        color: {
-          field: "mode",
-          type: "nominal",
-          title: "Mode",
-          scale: {
-            domain: ["KTM", "LRT", "MRT", "Monorail"]
-          },
-          legend: {
-            orient: "right",
-            labelFontSize: 7,
-            titleFontSize: 8,
-            symbolSize: 30
-          }
-        },
-        size: {
-          value: 70
-        },
-        tooltip: [
-          { field: "name", type: "nominal", title: "Station" },
-          { field: "mode", type: "nominal", title: "Mode" },
-          { field: "region", type: "nominal", title: "Region" },
-          { field: "latitude", type: "quantitative", title: "Latitude" },
-          { field: "longitude", type: "quantitative", title: "Longitude" }
-        ]
-      }
+  data: {
+    url: "data/stations_clean.csv"
+  },
+  transform: [
+    {
+      filter: "datum.region == 'Klang Valley' && datum.mode != 'LRT'"
     }
   ],
-  config: {
-    background: "#dcecf7",
-    view: {
-      stroke: null
-    }
+  mark: {
+    type: "circle",
+    filled: true,
+    opacity: 0.78,
+    stroke: "white",
+    strokeWidth: 2,
+    clip: true
+  },
+  encoding: {
+    longitude: {
+      field: "longitude",
+      type: "quantitative"
+    },
+    latitude: {
+      field: "latitude",
+      type: "quantitative"
+    },
+    color: {
+      field: "mode",
+      type: "nominal",
+      title: "Mode",
+      scale: modeColorScale,
+      legend: {
+        orient: "right",
+        labelFontSize: 7,
+        titleFontSize: 8,
+        symbolSize: 30
+      }
+    },
+    size: {
+      value: 100
+    },
+    tooltip: [
+      { field: "name", type: "nominal", title: "Station" },
+      { field: "mode", type: "nominal", title: "Mode" },
+      { field: "region", type: "nominal", title: "Region" },
+      { field: "latitude", type: "quantitative", title: "Latitude" },
+      { field: "longitude", type: "quantitative", title: "Longitude" }
+    ]
   }
+},
+{
+  data: {
+    url: "data/stations_clean.csv"
+  },
+  transform: [
+    {
+      filter: "datum.region == 'Klang Valley' && datum.mode == 'LRT'"
+    }
+  ],
+  mark: {
+    type: "circle",
+    filled: true,
+    opacity: 0.55,
+    stroke: "#333333",
+    strokeWidth: 0.8,
+    clip: true
+  },
+  encoding: {
+    longitude: {
+      field: "longitude",
+      type: "quantitative"
+    },
+    latitude: {
+      field: "latitude",
+      type: "quantitative"
+    },
+    color: {
+      field: "mode",
+      type: "nominal",
+      title: "Mode",
+      scale: modeColorScale,
+      legend: null
+    },
+    size: {
+      value: 70
+    },
+    tooltip: [
+      { field: "name", type: "nominal", title: "Station" },
+      { field: "mode", type: "nominal", title: "Mode" },
+      { field: "region", type: "nominal", title: "Region" },
+      { field: "latitude", type: "quantitative", title: "Latitude" },
+      { field: "longitude", type: "quantitative", title: "Longitude" }
+    ]
+  }
+},
+  ],
+  config: {
+      background: "#dcecf7",
+      view: {
+        stroke: "#d0d0d0",
+        strokeWidth: 1
+      }
+}
 });
 
 const coverageScatterSpec = withBase({
@@ -1111,13 +1380,171 @@ const ridershipPerStationSpec = withBase({
   }
 });
 
-vegaEmbed("#chart-total-trend", totalTrendSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-mode", modeSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-weekday-weekend", weekdayWeekendSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-yearly-average", yearlyAverageSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-service-bar", serviceBarSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-service-rank", serviceRankSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-malaysia-map", malaysiaMapSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-klang-map", klangMapSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-coverage-scatter", coverageScatterSpec, { actions: false, renderer: "svg" });
-vegaEmbed("#chart-ridership-per-station", ridershipPerStationSpec, { actions: false, renderer: "svg" });
+let selectedMode = "All";
+
+function cloneSpec(spec) {
+  return JSON.parse(JSON.stringify(spec));
+}
+
+function getRidershipCalculation(selectedMode) {
+  if (selectedMode === "Bus") {
+    return "toNumber(datum.bus_rkl) + toNumber(datum.bus_rkn) + toNumber(datum.bus_rpn)";
+  }
+
+  if (selectedMode === "KTM") {
+    return "toNumber(datum.rail_komuter) + toNumber(datum.rail_komuter_utara) + toNumber(datum.rail_ets) + toNumber(datum.rail_intercity) + toNumber(datum.rail_tebrau)";
+  }
+
+  if (selectedMode === "LRT") {
+    return "toNumber(datum.rail_lrt_ampang) + toNumber(datum.rail_lrt_kj)";
+  }
+
+  if (selectedMode === "MRT") {
+    return "toNumber(datum.rail_mrt_kajang) + toNumber(datum.rail_mrt_pjy)";
+  }
+
+  if (selectedMode === "Monorail") {
+    return "toNumber(datum.rail_monorail)";
+  }
+
+  return "toNumber(datum.bus_rkl) + toNumber(datum.bus_rkn) + toNumber(datum.bus_rpn) + toNumber(datum.rail_lrt_ampang) + toNumber(datum.rail_lrt_kj) + toNumber(datum.rail_monorail) + toNumber(datum.rail_mrt_kajang) + toNumber(datum.rail_mrt_pjy) + toNumber(datum.rail_ets) + toNumber(datum.rail_intercity) + toNumber(datum.rail_komuter) + toNumber(datum.rail_komuter_utara) + toNumber(datum.rail_tebrau)";
+}
+
+function updateTotalRidershipCalculation(spec, selectedMode) {
+  const newCalculation = getRidershipCalculation(selectedMode);
+
+  function updateTransforms(part) {
+    if (part.transform) {
+      part.transform.forEach(function(t) {
+        if (t.as === "total_ridership") {
+          t.calculate = newCalculation;
+        }
+      });
+    }
+
+    if (part.layer) {
+      part.layer.forEach(updateTransforms);
+    }
+  }
+
+  updateTransforms(spec);
+  return spec;
+}
+
+function addModeFilterToModeChart(spec, selectedMode) {
+  if (selectedMode === "All") {
+    return spec;
+  }
+
+  if (!spec.transform) {
+    spec.transform = [];
+  }
+
+  spec.transform.push({
+    filter: "datum.mode == '" + selectedMode + "'"
+  });
+
+  return spec;
+}
+
+function getServiceFilterExpression(selectedMode) {
+  if (selectedMode === "Bus") {
+    return "indexof(datum.service, 'Bus') >= 0";
+  }
+
+  if (selectedMode === "KTM") {
+    return "indexof(datum.service, 'KTM') >= 0 || indexof(datum.service, 'ETS') >= 0";
+  }
+
+  if (selectedMode === "LRT") {
+    return "indexof(datum.service, 'LRT') >= 0";
+  }
+
+  if (selectedMode === "MRT") {
+    return "indexof(datum.service, 'MRT') >= 0";
+  }
+
+  if (selectedMode === "Monorail") {
+    return "indexof(datum.service, 'Monorail') >= 0";
+  }
+
+  return null;
+}
+
+function addModeFilterToServiceSpec(spec, selectedMode) {
+  const filterExpression = getServiceFilterExpression(selectedMode);
+
+  if (!filterExpression) {
+    return spec;
+  }
+
+  if (!spec.transform) {
+    spec.transform = [];
+  }
+
+  spec.transform.unshift({
+    filter: filterExpression
+  });
+
+  return spec;
+}
+
+function addModeFilterToMapSpec(spec, selectedMode) {
+  if (selectedMode === "All") {
+    return spec;
+  }
+
+  spec.layer.forEach(function(layer) {
+    if (layer.data && layer.data.url === "data/stations_clean.csv") {
+      if (!layer.transform) {
+        layer.transform = [];
+      }
+
+      layer.transform.push({
+        filter: "datum.mode == '" + selectedMode + "'"
+      });
+    }
+  });
+
+  return spec;
+}
+
+function renderDashboard() {
+  const filteredTotalTrendSpec = updateTotalRidershipCalculation(cloneSpec(totalTrendSpec), selectedMode);
+  vegaEmbed("#chart-total-trend", filteredTotalTrendSpec, { actions: false, renderer: "svg" });
+
+  const filteredModeSpec = addModeFilterToModeChart(cloneSpec(modeSpec), selectedMode);
+  vegaEmbed("#chart-mode", filteredModeSpec, { actions: false, renderer: "svg" });
+
+  const filteredWeekdayWeekendSpec = updateTotalRidershipCalculation(cloneSpec(weekdayWeekendSpec), selectedMode);
+  vegaEmbed("#chart-weekday-weekend", filteredWeekdayWeekendSpec, { actions: false, renderer: "svg" });
+
+  const filteredYearlyAverageSpec = updateTotalRidershipCalculation(cloneSpec(yearlyAverageSpec), selectedMode);
+  vegaEmbed("#chart-yearly-average", filteredYearlyAverageSpec, { actions: false, renderer: "svg" });
+
+  const filteredServiceBarSpec = addModeFilterToServiceSpec(cloneSpec(serviceBarSpec), selectedMode);
+  vegaEmbed("#chart-service-bar", filteredServiceBarSpec, { actions: false, renderer: "svg" });
+
+  const filteredServiceRankSpec = addModeFilterToServiceSpec(cloneSpec(serviceRankSpec), selectedMode);
+  vegaEmbed("#chart-service-rank", filteredServiceRankSpec, { actions: false, renderer: "svg" });
+
+  const filteredMalaysiaMapSpec = addModeFilterToMapSpec(cloneSpec(malaysiaMapSpec), selectedMode);
+  vegaEmbed("#chart-malaysia-map", filteredMalaysiaMapSpec, { actions: false, renderer: "svg" });
+
+  const filteredKlangMapSpec = addModeFilterToMapSpec(cloneSpec(klangMapSpec), selectedMode);
+  vegaEmbed("#chart-klang-map", filteredKlangMapSpec, { actions: false, renderer: "svg" });
+
+  vegaEmbed("#chart-coverage-scatter", coverageScatterSpec, { actions: false, renderer: "svg" });
+  vegaEmbed("#chart-ridership-per-station", ridershipPerStationSpec, { actions: false, renderer: "svg" });
+}
+
+renderDashboard();
+
+const modeFilter = document.getElementById("mode-filter");
+
+if (modeFilter) {
+  modeFilter.addEventListener("change", function(event) {
+    selectedMode = event.target.value;
+    renderDashboard();
+  });
+}
